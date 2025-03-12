@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Administrator {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+
+  activityGroups ActivityGroup[]
+  tasks          Task[]
+
+  @@map("administrators")
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  title       String
+  description String
+  status      TaskStatus
+  createdAt   DateTime   @default(now())
+
+  assignments TaskAssignment[]
+
+  activityGroup   ActivityGroup @relation(fields: [activityGroupId], references: [id], onDelete: Cascade)
+  activityGroupId Int
+  createdBy       Administrator @relation(fields: [administratorId], references: [id], onDelete: Cascade)
+  administratorId String
+
+  @@map("tasks")
+}
+
+model ActivityGroup {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+
+  tasks Task[]
+
+  createdBy       Administrator @relation(fields: [administratorId], references: [id], onDelete: Cascade)
+  administratorId String
+
+  @@map("activity_groups")
+}
+
+model TaskAssignment {
+  id          Int    @id @default(autoincrement())
+  accessToken String @unique
+
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId         String
+  externalUser   ExternalUser @relation(fields: [externalUserId], references: [id], onDelete: Cascade)
+  externalUserId String
+
+  @@map("task_assignments")
+}
+
+model ExternalUser {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String
+
+  assignments TaskAssignment[]
+
+  @@map("external_users")
+}
