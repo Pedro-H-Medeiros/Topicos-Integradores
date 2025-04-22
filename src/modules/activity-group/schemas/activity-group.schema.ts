@@ -1,17 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { z } from 'zod'
 
-export class ActivityGroupSchemaSwagger {
-  @ApiProperty({
-    example: 'Activity Group Name',
-    description: 'Activity Group name',
-    required: true,
-  })
-  name: string
+export const createGroupControllerSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+})
 
-  @ApiProperty({
-    example: 'Activity Group Description',
-    description: 'Activity Group description',
-    required: true,
-  })
-  description: string
-}
+export type CreateGroupControllerBody = z.infer<
+  typeof createGroupControllerSchema
+>

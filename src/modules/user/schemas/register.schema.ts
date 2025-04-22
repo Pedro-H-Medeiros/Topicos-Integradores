@@ -1,25 +1,25 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { z } from 'zod'
 
-export class RegisterSchemaSwagger {
-  @ApiProperty({
-    example: 'John Doe',
-    description: 'User full name',
-    required: true,
-  })
-  name: string
+const onlyLettersRegex = /^[A-Za-z\s]+$/
 
-  @ApiProperty({
-    example: 'john.doe@email.com',
-    description: 'User email',
-    format: 'email',
-    required: true,
-  })
-  email: string
+export const registerUserBodySchema = z.object({
+  name: z
+    .string()
+    .nonempty()
+    .min(10, 'Deve conter mais de 10 caracteres.')
+    .regex(onlyLettersRegex, 'O nome deve conter somente letras.'),
 
-  @ApiProperty({
-    example: 'strongPassword123',
-    description: 'User password',
-    required: true,
-  })
-  password: string
-}
+  email: z.string().email().nonempty(),
+
+  password: z.coerce
+    .string()
+    .min(8, 'A senha deve conter mais de 8 caracteres.')
+    .regex(/[A-Z]/, 'A senha deve conter pelo menos uma letra maiúscula.')
+    .regex(/[a-z]/, 'A senha deve conter pelo menos uma letra minúscula.')
+    .regex(
+      /[^a-zA-Z0-9]/,
+      'A senha deve conter pelo menos um caractere especial.',
+    ),
+})
+
+export type RegisterUserBody = z.infer<typeof registerUserBodySchema>

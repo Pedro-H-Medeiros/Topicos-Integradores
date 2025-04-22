@@ -1,24 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { z } from 'zod'
 
-export class CreateTaskSchemaSwagger {
-  @ApiProperty({
-    description: 'The title of the task',
-    type: String,
-    required: true,
-  })
-  title: string
+export const createTaskBodySchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  status: z.enum(['TODO', 'IN_PROGRESS', 'COMPLETED']).default('TODO'),
+})
 
-  @ApiProperty({
-    description: 'The description of the task',
-    type: String,
-    required: true,
-  })
-  description: string
-
-  @ApiProperty({
-    description: 'The current status of the task',
-    enum: ['TODO', 'IN_PROGRESS', 'COMPLETED'],
-    default: 'TODO',
-  })
-  status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED'
-}
+export type CreateTaskBody = z.infer<typeof createTaskBodySchema>

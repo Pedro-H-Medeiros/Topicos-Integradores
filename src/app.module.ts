@@ -5,7 +5,6 @@ import { UserModule } from './modules/user/user.module'
 import { TaskModule } from './modules/task/task.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { ActivityGroupModule } from './modules/activity-group/activity-group.module'
-import { MailModule } from './modules/mail/mail.module'
 
 @Module({
   imports: [
@@ -13,7 +12,6 @@ import { MailModule } from './modules/mail/mail.module'
       validate: (env) => envSchema.parse(env),
       isGlobal: true,
     }),
-    MailModule,
     AuthModule,
     ActivityGroupModule,
     TaskModule,
