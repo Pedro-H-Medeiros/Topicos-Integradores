@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { AuthService } from './auth.service'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthSchemaSwagger } from './schemas/auth.schema'
+import { Public } from './decorators/public.decorator'
 
 const authControllerPayloadSchema = z.object({
   email: z.string().email(),
@@ -26,6 +27,7 @@ export class AuthController {
     description: 'User credential does not match.',
   })
   @ApiBody({ type: AuthSchemaSwagger })
+  @Public()
   @Post('/sign-in')
   @HttpCode(201)
   signIn(@Body() body: AuthControllerPayload) {
