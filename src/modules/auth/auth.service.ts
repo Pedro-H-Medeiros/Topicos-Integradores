@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { AuthControllerPayload } from './auth.controller'
 import { PrismaService } from '@/prisma/prisma.service'
 import { compare } from 'bcryptjs'
@@ -17,16 +17,16 @@ export class AuthService {
     })
 
     if (!user) {
-      throw new NotFoundException('User credentials does not exists.')
+      throw new UnauthorizedException('User credentials does not exists.')
     }
 
     const isPasswordValid = await compare(password, user.password)
 
     if (!isPasswordValid) {
-      throw new NotFoundException('User credentials does not exists.')
+      throw new UnauthorizedException('User credentials does not exists.')
     }
 
-    const accessToken = this.jwt.sign({ sub: user.id })
+    const accessToken = await this.jwt.signAsync({ sub: user.id })
 
     return {
       access_token: accessToken,

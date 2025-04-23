@@ -15,17 +15,21 @@ import { JwtStrategy } from './strategies/jwt.strategy'
       inject: [ConfigService],
       global: true,
       useFactory(config: ConfigService<Env, true>) {
+        const privateKey = config.get('JWT_PRIVATE_KEY', { infer: true })
+        const publicKey = config.get('JWT_PUBLIC_KEY', { infer: true })
+
         return {
           signOptions: {
-            algorithm: 'HS256',
+            algorithm: 'RS256',
             expiresIn: '1d',
           },
-          secret: config.get('JWT_SECRET_KEY'),
+          privateKey: Buffer.from(privateKey, 'base64'),
+          publicKey: Buffer.from(publicKey, 'base64'),
         }
       },
     }),
   ],
-  providers: [AuthService, PrismaService, JwtStrategy],
   controllers: [AuthController],
+  providers: [AuthService, PrismaService, JwtStrategy],
 })
 export class AuthModule {}

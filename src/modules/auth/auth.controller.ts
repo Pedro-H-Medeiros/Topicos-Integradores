@@ -28,7 +28,7 @@ export class AuthController {
   @ApiBody({ type: AuthSchemaSwagger })
   @Post('/sign-in')
   @HttpCode(201)
-  signIn(@Body() authPayload: AuthControllerPayload) {
-    return this.authService.validateUser(authPayload)
+  signIn(@Body() body: AuthControllerPayload) {
+    return this.authService.validateUser(body)
   }
 }

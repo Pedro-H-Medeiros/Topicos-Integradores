@@ -1,5 +1,3 @@
-import { CurrentUser } from '@/modules/auth/current-user.decorator'
-import { JwtAuthGuard } from '@/modules/auth/jwt-auth.guard'
 import { UserPayload } from '@/modules/auth/strategies/jwt.strategy'
 import {
   Body,
@@ -17,6 +15,8 @@ import {
   CreateTaskBody,
   createTaskBodySchema,
 } from './schemas/create-task.schema'
+import { CurrentUser } from '../auth/decorators/current-user.decorator'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 
 @ApiTags('Tasks')
 @Controller('/repositories/:groupId/task')

@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common'
 import { CreateGroupService } from './services/create-group.service'
 import { ZodValidationPipe } from '@/pipes/zod-validation.pipe'
-import { CurrentUser } from '../auth/current-user.decorator'
 import { UserPayload } from '../auth/strategies/jwt.strategy'
 import {
   createGroupControllerSchema,
@@ -22,8 +21,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { ActivityGroupSchemaSwagger } from './schemas/activity-group-swagger.schema'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { FetchGroupService } from './services/fetch-group.service'
+import { CurrentUser } from '../auth/decorators/current-user.decorator'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 
 @ApiBearerAuth()
 @ApiTags('Activity Group')
