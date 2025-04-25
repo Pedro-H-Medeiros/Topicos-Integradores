@@ -1,9 +1,10 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common'
+import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common'
 import { z } from 'zod'
 import { AuthService } from './auth.service'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthSchemaSwagger } from './schemas/auth.schema'
 import { Public } from './decorators/public.decorator'
+import { Response } from 'express'
 
 const authControllerPayloadSchema = z.object({
   email: z.string().email(),
@@ -30,7 +31,10 @@ export class AuthController {
   @Public()
   @Post('/sign-in')
   @HttpCode(201)
-  signIn(@Body() body: AuthControllerPayload) {
-    return this.authService.validateUser(body)
+  signIn(
+    @Body() body: AuthControllerPayload,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.validateUser(body, response)
   }
 }

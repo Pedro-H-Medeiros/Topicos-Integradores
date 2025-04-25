@@ -62,6 +62,7 @@ export class TaskService {
         description: true,
         status: true,
         activityGroupId: true,
+        createdAt: true,
       },
     })
 
@@ -93,6 +94,7 @@ export class TaskService {
         description: true,
         status: true,
         activityGroupId: true,
+        createdAt: true,
       },
     })
 
@@ -124,6 +126,7 @@ export class TaskService {
         description: true,
         status: true,
         activityGroupId: true,
+        createdAt: true,
       },
     })
 
@@ -155,6 +158,7 @@ export class TaskService {
         description: true,
         status: true,
         activityGroupId: true,
+        createdAt: true,
       },
     })
 

@@ -1,7 +1,12 @@
 import { PrismaService } from '@/prisma/prisma.service'
-import { ConflictException, Injectable } from '@nestjs/common'
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { hash } from 'bcryptjs'
 import { RegisterUserBody } from '../schemas/register.schema'
+import { UserPayload } from '@/modules/auth/strategies/jwt.strategy'
 
 @Injectable()
 export class UserService {
@@ -29,5 +34,22 @@ export class UserService {
         password: passwordHash,
       },
     })
+  }
+
+  async getUserName(user: UserPayload) {
+    const userProfile = await this.prisma.administrator.findUnique({
+      where: {
+        id: user.sub,
+      },
+      select: {
+        name: true,
+      },
+    })
+
+    if (!userProfile) {
+      throw new NotFoundException('This user does not Exists')
+    }
+
+    return { userProfile }
   }
 }
