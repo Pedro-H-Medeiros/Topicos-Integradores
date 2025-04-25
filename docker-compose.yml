@@ -32,7 +32,3 @@ volumes:
 networks:
     postgres-db-network:
         driver: bridge
-        ipam: 
-            config:
-                - subnet: 172.18.0.0/16
-                - gateway: 172.18.0.1

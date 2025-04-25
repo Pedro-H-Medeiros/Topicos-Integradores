@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { AuthControllerPayload } from './auth.controller'
 import { PrismaService } from '@/prisma/prisma.service'
 import { compare } from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
+import { Response } from 'express'
 
 @Injectable()
 export class AuthService {
@@ -11,22 +12,31 @@ export class AuthService {
     private jwt: JwtService,
   ) {}
 
-  async validateUser({ email, password }: AuthControllerPayload) {
+  async validateUser(body: AuthControllerPayload, response: Response) {
+    const { email, password } = body
+
     const user = await this.prisma.administrator.findUnique({
       where: { email },
     })
 
     if (!user) {
-      throw new NotFoundException('User credentials does not exists.')
+      throw new UnauthorizedException('User credentials does not exists.')
     }
 
     const isPasswordValid = await compare(password, user.password)
 
     if (!isPasswordValid) {
-      throw new NotFoundException('User credentials does not exists.')
+      throw new UnauthorizedException('User credentials does not exists.')
     }
 
-    const accessToken = this.jwt.sign({ sub: user.id })
+    const accessToken = await this.jwt.signAsync({ sub: user.id })
+
+    response.cookie('sessionId', accessToken, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 60 * 24 * 1000), // 1 day
+      secure: false,
+      sameSite: 'lax',
+    })
 
     return {
       access_token: accessToken,

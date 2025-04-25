@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common'
-import { CreateGroupController } from './controllers/create-group.controller'
 import { PrismaService } from '@/prisma/prisma.service'
-import { FetchGroupControler } from './controllers/fetch-group.controller'
+import { ActiviyGroupController } from './activity-group.controller'
+import { CreateGroupService } from './services/create-group.service'
+import { FetchGroupService } from './services/fetch-group.service'
 
 @Module({
-  controllers: [CreateGroupController, FetchGroupControler],
-  providers: [PrismaService],
+  controllers: [ActiviyGroupController],
+  providers: [PrismaService, CreateGroupService, FetchGroupService],
 })
 export class ActivityGroupModule {}
