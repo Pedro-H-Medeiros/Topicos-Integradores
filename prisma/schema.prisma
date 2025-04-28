@@ -19,8 +19,7 @@ model Administrator {
   email    String @unique
   password String
 
-  activityGroups ActivityGroup[]
-  tasks          Task[]
+  tasks Task[]
 
   @@map("administrators")
 }
@@ -34,26 +33,10 @@ model Task {
 
   assignments TaskAssignment[]
 
-  activityGroup   ActivityGroup @relation(fields: [activityGroupId], references: [id], onDelete: Cascade)
-  activityGroupId Int
   createdBy       Administrator @relation(fields: [administratorId], references: [id], onDelete: Cascade)
   administratorId String
 
   @@map("tasks")
-}
-
-model ActivityGroup {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String
-  createdAt   DateTime @default(now())
-
-  tasks Task[]
-
-  createdBy       Administrator @relation(fields: [administratorId], references: [id], onDelete: Cascade)
-  administratorId String
-
-  @@map("activity_groups")
 }
 
 model TaskAssignment {

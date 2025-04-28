@@ -7,7 +7,7 @@ import { CreateTaskBody } from '../schemas/create-task.schema'
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createTask(user: UserPayload, groupId: number, body: CreateTaskBody) {
+  async createTask(user: UserPayload, body: CreateTaskBody) {
     const { title, description, status } = body
 
     const userExists = await this.prisma.administrator.findUnique({
@@ -18,13 +18,6 @@ export class TaskService {
       throw new NotFoundException('This user does not exists.')
     }
 
-    const activityGroup = await this.prisma.activityGroup.findUnique({
-      where: {
-        id: groupId,
-        createdBy: { id: userExists.id },
-      },
-    })
-
     return await this.prisma.task.create({
       data: {
         title,
@@ -33,36 +26,26 @@ export class TaskService {
         createdBy: {
           connect: { id: userExists.id },
         },
-        activityGroup: {
-          connect: { id: activityGroup.id },
-        },
       },
     })
   }
 
-  async getTasksByGroupId(user: UserPayload, groupId: number) {
-    const group = await this.prisma.activityGroup.findUnique({
-      where: {
-        id: groupId,
-      },
-    })
-
-    if (!group) {
-      throw new NotFoundException('This group does not exists.')
-    }
-
+  async getAllTasks(user: UserPayload) {
     const tasks = await this.prisma.task.findMany({
       where: {
         administratorId: user.sub,
-        activityGroupId: groupId,
       },
       select: {
         id: true,
         title: true,
         description: true,
         status: true,
-        activityGroupId: true,
         createdAt: true,
+        createdBy: {
+          select: {
+            name: true,
+          },
+        },
       },
     })
 
@@ -73,19 +56,10 @@ export class TaskService {
     return { tasks }
   }
 
-  async getInProgressTasks(user: UserPayload, groupId: number) {
-    const group = await this.prisma.activityGroup.findUnique({
-      where: { id: groupId },
-    })
-
-    if (!group) {
-      throw new NotFoundException('This group does not exists.')
-    }
-
+  async getInProgressTasks(user: UserPayload) {
     const tasks = await this.prisma.task.findMany({
       where: {
         administratorId: user.sub,
-        activityGroupId: groupId,
         status: 'IN_PROGRESS',
       },
       select: {
@@ -93,7 +67,6 @@ export class TaskService {
         title: true,
         description: true,
         status: true,
-        activityGroupId: true,
         createdAt: true,
       },
     })
@@ -105,19 +78,10 @@ export class TaskService {
     return { tasks }
   }
 
-  async getTodoTasks(user: UserPayload, groupId: number) {
-    const group = await this.prisma.activityGroup.findUnique({
-      where: { id: groupId },
-    })
-
-    if (!group) {
-      throw new NotFoundException('This group does not exists.')
-    }
-
+  async getTodoTasks(user: UserPayload) {
     const tasks = await this.prisma.task.findMany({
       where: {
         administratorId: user.sub,
-        activityGroupId: groupId,
         status: 'TODO',
       },
       select: {
@@ -125,7 +89,6 @@ export class TaskService {
         title: true,
         description: true,
         status: true,
-        activityGroupId: true,
         createdAt: true,
       },
     })
@@ -137,19 +100,10 @@ export class TaskService {
     return { tasks }
   }
 
-  async getCompletedTasks(user: UserPayload, groupId: number) {
-    const group = await this.prisma.activityGroup.findUnique({
-      where: { id: groupId },
-    })
-
-    if (!group) {
-      throw new NotFoundException('This group does not exists.')
-    }
-
+  async getCompletedTasks(user: UserPayload) {
     const tasks = await this.prisma.task.findMany({
       where: {
         administratorId: user.sub,
-        activityGroupId: groupId,
         status: 'COMPLETED',
       },
       select: {
@@ -157,7 +111,6 @@ export class TaskService {
         title: true,
         description: true,
         status: true,
-        activityGroupId: true,
         createdAt: true,
       },
     })

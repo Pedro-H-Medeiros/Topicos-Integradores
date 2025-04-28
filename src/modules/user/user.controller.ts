@@ -48,6 +48,6 @@ export class UserController {
   @Get('/me')
   @HttpCode(HttpStatus.OK)
   async me(@CurrentUser() user: UserPayload) {
-    await this.userService.getUserName(user)
+    return await this.userService.getUserName(user)
   }
 }

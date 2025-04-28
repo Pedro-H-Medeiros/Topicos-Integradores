@@ -7,7 +7,6 @@ const prisma = new PrismaClient()
 async function main() {
   await prisma.administrator.deleteMany()
   await prisma.task.deleteMany()
-  await prisma.activityGroup.deleteMany()
   await prisma.taskAssignment.deleteMany()
   await prisma.externalUser.deleteMany()
 
@@ -28,23 +27,6 @@ async function main() {
     },
   })
 
-  // Grupos de atividade
-  const group1 = await prisma.activityGroup.create({
-    data: {
-      name: 'Marketing',
-      description: 'Atividades de redes sociais e campanhas',
-      administratorId: admin1.id,
-    },
-  })
-
-  const group2 = await prisma.activityGroup.create({
-    data: {
-      name: 'Desenvolvimento',
-      description: 'Tarefas técnicas e desenvolvimento de software',
-      administratorId: admin2.id,
-    },
-  })
-
   // Tarefas
   const task1 = await prisma.task.create({
     data: {
@@ -52,7 +34,6 @@ async function main() {
       description: 'Post com CTA para nova campanha',
       status: 'TODO',
       administratorId: admin1.id,
-      activityGroupId: group1.id,
     },
   })
 
@@ -62,7 +43,6 @@ async function main() {
       description: 'Revisar rotas de autenticação',
       status: 'IN_PROGRESS',
       administratorId: admin2.id,
-      activityGroupId: group2.id,
     },
   })
 
@@ -72,7 +52,6 @@ async function main() {
       description: 'Reunião de alinhamento com equipe',
       status: 'COMPLETED',
       administratorId: admin1.id,
-      activityGroupId: group1.id,
     },
   })
 

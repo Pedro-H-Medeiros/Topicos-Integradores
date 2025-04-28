@@ -42,4 +42,14 @@ export class AuthService {
       access_token: accessToken,
     }
   }
+
+  async logout(res: Response) {
+    res.clearCookie('sessionId', {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    })
+
+    return { message: 'Logout realizado com sucesso.' }
+  }
 }

@@ -37,6 +37,7 @@ export class UserService {
   }
 
   async getUserName(user: UserPayload) {
+    console.log(user)
     const userProfile = await this.prisma.administrator.findUnique({
       where: {
         id: user.sub,
