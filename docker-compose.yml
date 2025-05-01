@@ -21,6 +21,16 @@ services:
             - ./servers.json:/pgadmin4/servers.json
         networks:
             - postgres-db-network
+    node:
+        build:
+            context: ./Topicos-Integradores
+        restart: always
+        ports:
+            - 5001:5001
+        depends_on:
+            - postgres
+        env_file:
+            - ./Topicos-Integradores/.env
 
 volumes:
     postgres-db-volume:
