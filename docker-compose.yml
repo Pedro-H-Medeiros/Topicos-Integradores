@@ -30,7 +30,7 @@ services:
         depends_on:
             - postgres
         env_file:
-            - ./Topicos-Integradores/.env
+            - .env
 
 volumes:
     postgres-db-volume:
