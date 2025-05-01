@@ -22,8 +22,7 @@ services:
         networks:
             - postgres-db-network
     node:
-        build:
-            context: ./Topicos-Integradores
+        build: /
         restart: always
         ports:
             - 5001:5001
