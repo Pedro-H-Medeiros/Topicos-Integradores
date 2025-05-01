@@ -4,6 +4,7 @@ import { envSchema } from './env'
 import { UserModule } from './modules/user/user.module'
 import { TaskModule } from './modules/task/task.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { EmailModule } from './modules/mail/email.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from './modules/auth/auth.module'
     AuthModule,
     TaskModule,
     UserModule,
+    EmailModule,
   ],
 })
 export class AppModule {}

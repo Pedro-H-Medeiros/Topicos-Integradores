@@ -13,11 +13,17 @@ enum TaskStatus {
   COMPLETED
 }
 
+enum USER_ROLES {
+  ADMIN
+  EXTERNALUSER
+}
+
 model Administrator {
-  id       String @id @default(uuid())
+  id       String     @id @default(uuid())
   name     String
-  email    String @unique
+  email    String     @unique
   password String
+  role     USER_ROLES @default(ADMIN)
 
   tasks Task[]
 
@@ -40,22 +46,22 @@ model Task {
 }
 
 model TaskAssignment {
-  id          Int    @id @default(autoincrement())
-  accessToken String @unique
-
+  id             Int          @id @default(autoincrement())
   task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
   taskId         String
   externalUser   ExternalUser @relation(fields: [externalUserId], references: [id], onDelete: Cascade)
   externalUserId String
 
+  @@unique([taskId, externalUserId])
   @@map("task_assignments")
 }
 
 model ExternalUser {
-  id    String @id @default(uuid())
-  email String @unique
-  name  String
-
+  id          String           @id @default(uuid())
+  email       String           @unique
+  name        String
+  role        USER_ROLES       @default(EXTERNALUSER)
+  accessToken String           @unique
   assignments TaskAssignment[]
 
   @@map("external_users")

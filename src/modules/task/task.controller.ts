@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -25,6 +26,7 @@ import {
   UpdateTaskStatusBody,
   updateTaskStatusBodySchema,
 } from './schemas/update-task.schema'
+import { Public } from '../auth/decorators/public.decorator'
 
 @ApiTags('Tasks')
 @Controller('/task')
@@ -55,8 +57,11 @@ export class TaskController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getAllTasks(@CurrentUser() user: UserPayload) {
-    return await this.taskService.getAllTasks(user)
+  async getAllTasks(
+    @CurrentUser() user: UserPayload,
+    @Query('page') page: number,
+  ) {
+    return await this.taskService.getAllTasks(user, page)
   }
 
   @ApiOperation({ summary: 'List tasks with TODO status' })
@@ -107,5 +112,34 @@ export class TaskController {
     body: UpdateTaskStatusBody,
   ) {
     return this.taskService.updateTaskStatus(user, taskId, body.status)
+  }
+
+  @ApiOperation({ summary: 'Assign task to external user via email' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Task assigned and email sent successfully.',
+  })
+  @Put('/:taskId/assign')
+  @HttpCode(HttpStatus.OK)
+  async assignTask(
+    @Param('taskId') taskId: string,
+    @Query('name') name: string,
+    @Query('email') email: string,
+  ) {
+    return await this.taskService.assignTask(taskId, name, email)
+  }
+
+  @ApiOperation({
+    summary: 'Get task assigned to an external user by accessToken',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Task assigned to external user retrieved successfully.',
+  })
+  @Public()
+  @Get('/external/:accessToken')
+  @HttpCode(HttpStatus.OK)
+  async getTaskByAccessToken(@Param('accessToken') accessToken: string) {
+    return await this.taskService.getTasksByAccessToken(accessToken)
   }
 }
