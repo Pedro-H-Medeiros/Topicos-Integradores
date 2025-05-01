@@ -6,9 +6,9 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -26,9 +26,10 @@ import {
   UpdateTaskStatusBody,
   updateTaskStatusBodySchema,
 } from './schemas/update-task.schema'
+import { Public } from '../auth/decorators/public.decorator'
 
 @ApiTags('Tasks')
-@Controller('/repositories/:groupId/task')
+@Controller('/task')
 @UseGuards(JwtAuthGuard)
 export class TaskController {
   constructor(private taskService: TaskService) {}
@@ -43,11 +44,10 @@ export class TaskController {
   @HttpCode(HttpStatus.CREATED)
   async createTask(
     @CurrentUser() user: UserPayload,
-    @Param('groupId', ParseIntPipe) groupId: number,
     @Body(new ZodValidationPipe(createTaskBodySchema))
     body: CreateTaskBody,
   ) {
-    return await this.taskService.createTask(user, groupId, body)
+    return await this.taskService.createTask(user, body)
   }
 
   @ApiOperation({ summary: 'List all tasks in a group' })
@@ -57,11 +57,11 @@ export class TaskController {
   })
   @Get()
   @HttpCode(HttpStatus.OK)
-  getTasksByGroupId(
+  async getAllTasks(
     @CurrentUser() user: UserPayload,
-    @Param('groupId', ParseIntPipe) groupId: number,
+    @Query('page') page: number,
   ) {
-    return this.taskService.getTasksByGroupId(user, groupId)
+    return await this.taskService.getAllTasks(user, page)
   }
 
   @ApiOperation({ summary: 'List tasks with TODO status' })
@@ -71,11 +71,8 @@ export class TaskController {
   })
   @Get('/todo')
   @HttpCode(HttpStatus.OK)
-  getTodoTasks(
-    @CurrentUser() user: UserPayload,
-    @Param('groupId', ParseIntPipe) groupId: number,
-  ) {
-    return this.taskService.getTodoTasks(user, groupId)
+  getTodoTasks(@CurrentUser() user: UserPayload) {
+    return this.taskService.getTodoTasks(user)
   }
 
   @ApiOperation({ summary: 'List tasks with IN_PROGRESS status' })
@@ -85,11 +82,8 @@ export class TaskController {
   })
   @Get('/in-progress')
   @HttpCode(HttpStatus.OK)
-  getInProgressTasks(
-    @CurrentUser() user: UserPayload,
-    @Param('groupId', ParseIntPipe) groupId: number,
-  ) {
-    return this.taskService.getInProgressTasks(user, groupId)
+  getInProgressTasks(@CurrentUser() user: UserPayload) {
+    return this.taskService.getInProgressTasks(user)
   }
 
   @ApiOperation({ summary: 'List tasks with COMPLETED status' })
@@ -99,11 +93,8 @@ export class TaskController {
   })
   @Get('/completed')
   @HttpCode(HttpStatus.OK)
-  getCompletedTasks(
-    @CurrentUser() user: UserPayload,
-    @Param('groupId', ParseIntPipe) groupId: number,
-  ) {
-    return this.taskService.getCompletedTasks(user, groupId)
+  getCompletedTasks(@CurrentUser() user: UserPayload) {
+    return this.taskService.getCompletedTasks(user)
   }
 
   @ApiOperation({ summary: 'Update task status' })
@@ -121,5 +112,34 @@ export class TaskController {
     body: UpdateTaskStatusBody,
   ) {
     return this.taskService.updateTaskStatus(user, taskId, body.status)
+  }
+
+  @ApiOperation({ summary: 'Assign task to external user via email' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Task assigned and email sent successfully.',
+  })
+  @Put('/:taskId/assign')
+  @HttpCode(HttpStatus.OK)
+  async assignTask(
+    @Param('taskId') taskId: string,
+    @Query('name') name: string,
+    @Query('email') email: string,
+  ) {
+    return await this.taskService.assignTask(taskId, name, email)
+  }
+
+  @ApiOperation({
+    summary: 'Get task assigned to an external user by accessToken',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Task assigned to external user retrieved successfully.',
+  })
+  @Public()
+  @Get('/external/:accessToken')
+  @HttpCode(HttpStatus.OK)
+  async getTaskByAccessToken(@Param('accessToken') accessToken: string) {
+    return await this.taskService.getTasksByAccessToken(accessToken)
   }
 }

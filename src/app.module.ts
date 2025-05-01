@@ -4,7 +4,7 @@ import { envSchema } from './env'
 import { UserModule } from './modules/user/user.module'
 import { TaskModule } from './modules/task/task.module'
 import { AuthModule } from './modules/auth/auth.module'
-import { ActivityGroupModule } from './modules/activity-group/activity-group.module'
+import { EmailModule } from './modules/mail/email.module'
 
 @Module({
   imports: [
@@ -13,9 +13,9 @@ import { ActivityGroupModule } from './modules/activity-group/activity-group.mod
       isGlobal: true,
     }),
     AuthModule,
-    ActivityGroupModule,
     TaskModule,
     UserModule,
+    EmailModule,
   ],
 })
 export class AppModule {}

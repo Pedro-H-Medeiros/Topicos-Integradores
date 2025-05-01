@@ -1,0 +1,8 @@
+-- CreateEnum
+CREATE TYPE "USER_ROLES" AS ENUM ('ADMIN', 'EXTERNALUSER');
+
+-- AlterTable
+ALTER TABLE "administrators" ADD COLUMN     "role" "USER_ROLES" NOT NULL DEFAULT 'ADMIN';
+
+-- AlterTable
+ALTER TABLE "external_users" ADD COLUMN     "role" "USER_ROLES" NOT NULL DEFAULT 'EXTERNALUSER';
