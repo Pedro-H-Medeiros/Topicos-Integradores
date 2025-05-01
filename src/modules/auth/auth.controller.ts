@@ -37,4 +37,10 @@ export class AuthController {
   ) {
     return this.authService.validateUser(body, response)
   }
+
+  @Public()
+  @Post('/logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    return await this.authService.logout(res)
+  }
 }

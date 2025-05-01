@@ -52,4 +52,21 @@ export class UserService {
 
     return { userProfile }
   }
+
+  async getExternalUserInfo(accessToken: string) {
+    const user = await this.prisma.externalUser.findUnique({
+      where: { accessToken },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    })
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.')
+    }
+
+    return { user }
+  }
 }
