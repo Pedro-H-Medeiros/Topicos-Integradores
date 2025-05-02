@@ -10,7 +10,7 @@
     "build": "nest build",
     "copy-package": "cp package.json dist/package.json",
     "copy-prisma-schema": "cp ./prisma/schema.prisma dist/schema.prisma",
-    "copy-env": "cp .env /dist/.env",
+    "copy-env": "cp .env dist/.env",
     "build-with-package": "npm run build && npm run copy-package && npm run copy-prisma-schema && npm run copy-env",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
