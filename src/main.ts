@@ -5,7 +5,7 @@ import { Env } from './env'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 // import { Handler, Context, Callback } from 'aws-lambda'
 import serverless from '@codegenie/serverless-express'
-
+import cookieParser from 'cookie-parser'
 // let server: Handler
 
 async function bootstrap() {
@@ -13,6 +13,8 @@ async function bootstrap() {
   app.init()
 
   const configService: ConfigService<Env, true> = app.get(ConfigService)
+
+  app.use(cookieParser())
 
   app.enableCors({
     origin: configService.get('CORS_ORIGIN', { infer: true }),
