@@ -20,13 +20,13 @@ export class AuthService {
     })
 
     if (!user) {
-      throw new UnauthorizedException('User credentials does not exists.')
+      throw new UnauthorizedException('User credentials does not match.')
     }
 
     const isPasswordValid = await compare(password, user.password)
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('User credentials does not exists.')
+      throw new UnauthorizedException('User credentials does not match.')
     }
 
     const accessToken = await this.jwt.signAsync({ sub: user.id })

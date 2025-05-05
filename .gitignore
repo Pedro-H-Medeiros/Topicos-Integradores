@@ -1,8 +1,12 @@
 # compiled output
 /dist
 /node_modules
+jspm_packages
 /build
 /data/*
+
+# Serverless directories
+.serverless
 
 # Logs
 logs

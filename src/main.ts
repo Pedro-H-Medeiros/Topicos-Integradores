@@ -3,9 +3,15 @@ import { AppModule } from './app.module'
 import { ConfigService } from '@nestjs/config'
 import { Env } from './env'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+// import { Handler, Context, Callback } from 'aws-lambda'
+import serverless from '@codegenie/serverless-express'
+
+// let server: Handler
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  app.init()
+
   const configService: ConfigService<Env, true> = app.get(ConfigService)
 
   app.enableCors({
@@ -31,11 +37,24 @@ async function bootstrap() {
     infer: true,
   })
 
+  const expressApp = app.getHttpAdapter().getInstance()
+
   try {
     await app.listen(PORT)
+    serverless({ app: expressApp })
     console.log('🚀 Server listening on port', PORT)
   } catch (error) {
     throw new Error(error)
   }
 }
 bootstrap()
+
+// export const handler: Handler = async (
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   event: any,
+//   context: Context,
+//   callback: Callback,
+// ) => {
+//   server = server ?? (await bootstrap())
+//   return server(event, context, callback)
+// }
