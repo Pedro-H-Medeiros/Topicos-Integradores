@@ -35,6 +35,7 @@ export class AuthService {
       httpOnly: true,
       expires: new Date(Date.now() + 60 * 60 * 24 * 1000), // 1 day
       secure: true,
+      sameSite: 'none',
     })
 
     return {
@@ -46,6 +47,7 @@ export class AuthService {
     res.clearCookie('sessionId', {
       httpOnly: true,
       secure: true,
+      sameSite: 'none',
     })
 
     return { message: 'Logout realizado com sucesso.' }
