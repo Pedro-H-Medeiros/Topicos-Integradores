@@ -8,6 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "postinstall": "npx prisma generate",
     "copy-package": "cp package.json dist/package.json",
     "copy-prisma-schema": "cp ./prisma/schema.prisma dist/schema.prisma",
     "copy-env": "cp .env dist/.env",
