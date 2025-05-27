@@ -34,8 +34,6 @@ export class AuthService {
     response.cookie('sessionId', accessToken, {
       httpOnly: true,
       expires: new Date(Date.now() + 60 * 60 * 24 * 1000), // 1 day
-      secure: true,
-      sameSite: 'none',
     })
 
     return {
