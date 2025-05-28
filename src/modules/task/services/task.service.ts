@@ -137,14 +137,12 @@ export class TaskService {
   }
 
   async updateTaskStatus(
-    user: UserPayload,
     taskId: string,
     newStatus: 'TODO' | 'IN_PROGRESS' | 'COMPLETED',
   ) {
     const task = await this.prisma.task.findFirst({
       where: {
         id: taskId,
-        administratorId: user.sub,
       },
     })
 

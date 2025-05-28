@@ -103,15 +103,15 @@ export class TaskController {
     description: 'Task status updated successfully.',
   })
   @ApiBody({ type: UpdateTaskStatusSwagger })
+  @Public()
   @Put('/:taskId/update-status')
   @HttpCode(HttpStatus.OK)
   async updateTaskStatus(
-    @CurrentUser() user: UserPayload,
     @Param('taskId') taskId: string,
     @Body(new ZodValidationPipe(updateTaskStatusBodySchema))
     body: UpdateTaskStatusBody,
   ) {
-    return this.taskService.updateTaskStatus(user, taskId, body.status)
+    return this.taskService.updateTaskStatus(taskId, body.status)
   }
 
   @ApiOperation({ summary: 'Assign task to external user via email' })
